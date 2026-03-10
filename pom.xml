@@ -43,7 +43,16 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+
         
+
+        <!-- Dotenv Loader-->
+		<dependency>
+		    <groupId>me.paulschwarz</groupId>
+		    <artifactId>spring-dotenv</artifactId>
+		    <version>4.0.0</version>
+		</dependency>
+
 
         <!-- Validation -->
         <dependency>
