@@ -13,9 +13,9 @@ public interface NationalParkRepository extends JpaRepository<NationalPark,Long>
 	// User Enter specific animal and this method queries and displays National Parks  that contain that animal
 	@Query(value="""
 			SELECT DISTINCT P.*
-			FROM national-parks  P JOIN park_animal_type T 
+			FROM national_parks  P JOIN park_animal_types T 
 			ON P.id= T.park_id
-			WHERE T.animal_type = : animalType
+			WHERE T.animal_type = :animalType
 			
 			""",nativeQuery = true)
 	List<NationalPark> findParksByAnimalType(@Param("animalType") String animalType);
