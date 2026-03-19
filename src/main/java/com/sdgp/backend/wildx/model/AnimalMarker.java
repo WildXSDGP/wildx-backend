@@ -41,4 +41,35 @@ public abstract class AnimalMarker {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    
+    
+    public AnimalMarker() {
+    }// for JPA
+    
+    public AnimalMarker(NationalPark nationalPark, Double latitude, Double longitude, 
+            LocalDateTime spottedAt, String reporterName, String notes) {
+    	this.nationalPark = nationalPark;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.spottedAt = spottedAt;
+        this.reporterName = reporterName;
+        this.notes = notes;
+        this.isVerified = false;
+    	
+    } //Argument constructor 1
+    
+    
+    public AnimalMarker(NationalPark nationalPark, Double latitude, Double longitude, 
+            String reporterName, String notes) {
+    	this(nationalPark, latitude, longitude, LocalDateTime.now(), reporterName, notes);
+    }// Overload  constructor 2
+    
+    
+    
+    public AnimalMarker(NationalPark nationalPark, Double latitude, Double longitude) {
+        this(nationalPark, latitude, longitude, LocalDateTime.now(), null, null);
+    }// Overload constructor
 }
+
+
+
