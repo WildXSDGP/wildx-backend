@@ -146,6 +146,14 @@ public abstract class AnimalMarker {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
+	
+	@PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        if (spottedAt == null) {
+            spottedAt = LocalDateTime.now();
+        }
+    }
     
     
     
