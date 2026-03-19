@@ -12,14 +12,30 @@ public class AsianElephantMarker extends AnimalMarker {
 	
 	 public AsianElephantMarker() {
 	        super();
+	    }//JPA
+	 
+	 public AsianElephantMarker(NationalPark nationalPark, Double latitude, Double longitude,
+	            LocalDateTime spottedAt, String reporterName, String notes) {
+	        super(nationalPark, latitude, longitude, spottedAt, reporterName, notes);
+	    }
+
+	    // Constructor without spottedAt
+	    public AsianElephantMarker(NationalPark nationalPark, Double latitude, Double longitude,
+	            String reporterName, String notes) {
+	        super(nationalPark, latitude, longitude, reporterName, notes);
+	    }
+
+	    // Minimal constructor (just location)
+	    public AsianElephantMarker(NationalPark nationalPark, Double latitude, Double longitude) {
+	        super(nationalPark, latitude, longitude);
 	    }
 	
 	
 
 	@Override
 	public String getAnimalType() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return "Asian Elephant";
 	}
 
 }
