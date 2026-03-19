@@ -69,6 +69,10 @@ public abstract class AnimalMarker {
     public AnimalMarker(NationalPark nationalPark, Double latitude, Double longitude) {
         this(nationalPark, latitude, longitude, LocalDateTime.now(), null, null);
     }// Overload constructor
+    
+    // create abstract method to get animal type
+    public abstract String getAnimalType();
+    
 }
 
 
