@@ -13,11 +13,25 @@ public class SpottedDeerMarker extends AnimalMarker {
 	public SpottedDeerMarker() {
         super();
     }
+	
+	public SpottedDeerMarker(NationalPark nationalPark, Double latitude, Double longitude,
+            LocalDateTime spottedAt, String reporterName, String notes) {
+        super(nationalPark, latitude, longitude, spottedAt, reporterName, notes);
+    }
+
+    public SpottedDeerMarker(NationalPark nationalPark, Double latitude, Double longitude,
+            String reporterName, String notes) {
+        super(nationalPark, latitude, longitude, reporterName, notes);
+    }
+
+    public SpottedDeerMarker(NationalPark nationalPark, Double latitude, Double longitude) {
+        super(nationalPark, latitude, longitude);
+    }
 
 	@Override
 	public String getAnimalType() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return "Spotted Deer";
 	}
 
 }
