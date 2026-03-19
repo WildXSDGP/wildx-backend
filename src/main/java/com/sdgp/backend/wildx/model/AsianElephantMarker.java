@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import java.time.LocalDateTime;
 
 @Entity
+@DiscriminatorValue("ASIAN_ELEPHANT")
 public class AsianElephantMarker extends AnimalMarker {
 	
 	
