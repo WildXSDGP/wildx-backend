@@ -10,6 +10,10 @@ import com.sdgp.backend.wildx.model.AnimalMarker;
 
 @Repository
 public interface AnimalMarkerRepository extends JpaRepository<AnimalMarker, Long>{
-	List<AnimalMarker> findByNationalParkId(Long parkId);
+	List<AnimalMarker> findByNationalParkId(Long parkId); //get all Markers for perticular national park
+	
+	
+	List<AnimalMarker> findByNationalParkIdAndIsVerifiedTrue(Long parkId); // find only verified markers
+	
 
 }
