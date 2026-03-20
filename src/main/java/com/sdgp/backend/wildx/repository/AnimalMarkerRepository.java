@@ -15,5 +15,6 @@ public interface AnimalMarkerRepository extends JpaRepository<AnimalMarker, Long
 	
 	List<AnimalMarker> findByNationalParkIdAndIsVerifiedTrue(Long parkId); // find only verified markers
 	
-
+		
+	//new commit
 }
