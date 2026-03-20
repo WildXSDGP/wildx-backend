@@ -3,6 +3,7 @@ package com.sdgp.backend.wildx.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.sdgp.backend.wildx.model.AnimalMarker;
@@ -17,4 +18,8 @@ public interface AnimalMarkerRepository extends JpaRepository<AnimalMarker, Long
 	
 		
 	//new commit
+	
+	//get specific animal typemarkers from specific national park.
+	List<AnimalMarker> findByParkIdAndDiscriminator(@Param("parkId") Long parkId, 
+            @Param("discriminator") String discriminator);
 }
