@@ -154,7 +154,40 @@ const toggleFavorite = async (req, res) => {
   }
 };
 
-// ... (Other functions like getFavorites and getAnimalById follow the same logic)
+/**
+ * GET FAVORITES:
+ * Fetches all animals where 'isFavorite' is true.
+ * Used for the "My Favorites" list in the app.
+ */
+const getFavorites = async (req, res) => {
+  try {
+    const animals = await WildlifeAnimal.findAll({
+      where: { isFavorite: true },
+      order: [['name', 'ASC']],
+    });
+    res.json(animals.map(formatAnimal));
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+/**
+ * GET ANIMAL BY ID:
+ * Fetches one single animal using its ID (e.g., 'A001').
+ */
+const getAnimalById = async (req, res) => {
+  try {
+    const animal = await WildlifeAnimal.findByPk(req.params.id);
+
+    if (!animal) {
+      return res.status(404).json({ message: 'Animal not found' });
+    }
+
+    res.json(formatAnimal(animal));
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 module.exports = {
   getAllAnimals,
