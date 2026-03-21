@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Park {
+  id             String          @id @default(cuid())
+  name           String          @unique
+  description    String?
+  createdAt      DateTime        @default(now()) @map("created_at")
+  accommodations Accommodation[]
+
+  @@map("parks")
+}
+
+model Accommodation {
+  id               String                @id @default(cuid())
+  name             String
+  parkId           String                @map("park_id")
+  park             Park                  @relation(fields: [parkId], references: [id])
+  pricePerNight    Decimal               @map("price_per_night") @db.Decimal(10, 2)
+  distanceFromGate Decimal               @map("distance_from_gate") @db.Decimal(5, 2)
+  travelTime       String                @map("travel_time")
+  fuelStops        Int                   @default(0) @map("fuel_stops")
+  rating           Decimal               @default(0.0) @db.Decimal(2, 1)
+  isEcoFriendly    Boolean               @default(false) @map("is_eco_friendly")
+  isFamilyFriendly Boolean               @default(false) @map("is_family_friendly")
+  hasJeepHire      Boolean               @default(false) @map("has_jeep_hire")
+  description      String?
+  createdAt        DateTime              @default(now()) @map("created_at")
+  updatedAt        DateTime              @updatedAt @map("updated_at")
+  images           AccommodationImage[]
+  bookings         Booking[]
+
+  @@index([parkId])
+  @@index([pricePerNight])
+  @@index([rating])
+  @@map("accommodations")
+}
+
+model AccommodationImage {
+  id              Int           @id @default(autoincrement())
+  accommodationId String        @map("accommodation_id")
+  accommodation   Accommodation @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  imageUrl        String        @map("image_url")
+  sortOrder       Int           @default(0) @map("sort_order")
+
+  @@map("accommodation_images")
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String    @map("password_hash")
+  firstName       String?   @map("first_name")
+  lastName        String?   @map("last_name")
+  phoneNumber     String?   @map("phone_number")
+  profileImageUrl String?   @map("profile_image_url")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  bookings        Booking[]
+  refreshTokens   RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  cancelled
+  completed
+  no_show
+
+  @@map("booking_status")
+}
+
+model Booking {
+  id                String        @id
+  accommodationId   String        @map("accommodation_id")
+  accommodation     Accommodation @relation(fields: [accommodationId], references: [id])
+  userId            String?       @map("user_id")
+  user              User?         @relation(fields: [userId], references: [id])
+  checkInDate       DateTime      @map("check_in_date") @db.Date
+  checkOutDate      DateTime      @map("check_out_date") @db.Date
+  adults            Int           @default(1)
+  children          Int           @default(0)
+  accommodationCost Decimal       @map("accommodation_cost") @db.Decimal(10, 2)
+  serviceFee        Decimal       @map("service_fee") @db.Decimal(10, 2)
+  totalPrice        Decimal       @map("total_price") @db.Decimal(10, 2)
+  status            BookingStatus @default(confirmed)
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([accommodationId])
+  @@index([checkInDate, checkOutDate])
+  @@map("bookings")
+}
