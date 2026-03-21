@@ -68,7 +68,7 @@ const WildlifeAnimal = sequelize.define(
     /** * EMOJI:
      * Used as a fun fallback image while the real photo is loading.
      */
-    emoji: {
+    image_url: {
       type:      DataTypes.STRING(10),
       allowNull: false,
     },
