@@ -14,6 +14,9 @@ const ANIMAL_DISPLAY_NAMES = {
   SLOTH_BEAR:         'Sloth Bear',
 };
 
+// e.g. "Sri Lankan Leopard" → "SRI_LANKAN_LEOPARD"
+const toDiscriminator = (str) => str.toUpperCase().replace(/\s+/g, '_');
+
 // ─── GET /api/markers/park/:parkId ───────────────────────────
 // All markers for a park — ported from findByNationalParkId
 exports.getByPark = async (req, res, next) => {
