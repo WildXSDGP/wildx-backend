@@ -24,3 +24,14 @@ exports.getAllParks = async (req, res, next) => {
     res.json({ success: true, parks: result });
   } catch (err) { next(err); }
 };
+
+// GET /api/national-parks/:id
+exports.getParkById = async (req, res, next) => {
+  try {
+    const r = await query(
+      'SELECT * FROM national_parks WHERE id=$1 AND is_active=true', [req.params.id]
+    );
+    if (!r.rows.length) return res.status(404).json({ error: 'Park not found' });
+    res.json({ success: true, park: await enrichPark(r.rows[0]) });
+  } catch (err) { next(err); }
+};
