@@ -134,3 +134,15 @@ exports.getInBounds = async (req, res, next) => {
     res.json(result.rows);
   } catch (err) { next(err); }
 };
+
+// ─── GET /api/markers/:markerId ──────────────────────────────
+exports.getById = async (req, res, next) => {
+  try {
+    const result = await query(
+      'SELECT m.*, np.name as park_name FROM markers m LEFT JOIN national_parks np ON m.park_id = np.id WHERE m.id = $1',
+      [req.params.markerId]
+    );
+    if (!result.rows.length) return res.status(404).json({ error: 'Marker not found' });
+    res.json(result.rows[0]);
+  } catch (err) { next(err); }
+};
