@@ -75,3 +75,43 @@ exports.searchParks = async (req, res, next) => {
 exports.getAll        = exports.getAllParks;
 exports.getById       = exports.getParkById;
 exports.searchByAnimal = exports.searchParks;
+
+// POST /api/national-parks (admin)
+exports.create = async (req, res, next) => {
+  try {
+    const { name, description, location, sizeInHectares, openingTime,
+            closingTime, entryFee, imageUrl, contactNumber, email,
+            bestVisitingSeason } = req.body;
+    const r = await query(
+      `INSERT INTO national_parks
+         (name,description,location,size_in_hectares,opening_time,closing_time,
+          entry_fee,image_url,contact_number,email,best_visiting_season,is_active)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,true) RETURNING *`,
+      [name,description,location,sizeInHectares,openingTime,closingTime,
+       entryFee,imageUrl,contactNumber,email,bestVisitingSeason]
+    );
+    res.status(201).json({ success: true, park: r.rows[0] });
+  } catch (err) { next(err); }
+};
+
+exports.update = async (req, res, next) => {
+  try {
+    const r = await query(
+      `UPDATE national_parks SET
+         name=COALESCE($1,name), description=COALESCE($2,description),
+         location=COALESCE($3,location), image_url=COALESCE($4,image_url),
+         entry_fee=COALESCE($5,entry_fee)
+       WHERE id=$6 RETURNING *`,
+      [req.body.name,req.body.description,req.body.location,
+       req.body.imageUrl,req.body.entryFee, req.params.id]
+    );
+    res.json({ success: true, park: r.rows[0] });
+  } catch (err) { next(err); }
+};
+
+exports.remove = async (req, res, next) => {
+  try {
+    await query('UPDATE national_parks SET is_active=false WHERE id=$1', [req.params.id]);
+    res.json({ success: true, message: 'Park deactivated' });
+  } catch (err) { next(err); }
+};
