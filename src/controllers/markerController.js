@@ -56,3 +56,30 @@ exports.getVerifiedByPark = async (req, res, next) => {
     res.json(result.rows);
   } catch (err) { next(err); }
 };
+
+// ─── GET /api/markers/unverified ─────────────────────────────
+// All unverified — for admin review (findByIsVerifiedFalse)
+exports.getUnverified = async (req, res, next) => {
+  try {
+    const result = await query(
+      'SELECT m.*, np.name as park_name FROM markers m LEFT JOIN national_parks np ON m.park_id = np.id WHERE m.is_verified = FALSE ORDER BY m.created_at DESC'
+    );
+    res.json(result.rows);
+  } catch (err) { next(err); }
+};
+
+// ─── GET /api/markers/park/:parkId/animal-types ──────────────
+// Distinct animal types in a park — findDistinctAnimalTypesByParkId
+exports.getAnimalTypesInPark = async (req, res, next) => {
+  try {
+    const result = await query(
+      'SELECT DISTINCT animal_type FROM markers WHERE park_id = $1 ORDER BY animal_type',
+      [req.params.parkId]
+    );
+    const types = result.rows.map(r => ({
+      discriminator:  r.animal_type,
+      display_name:   ANIMAL_DISPLAY_NAMES[r.animal_type] || r.animal_type,
+    }));
+    res.json(types);
+  } catch (err) { next(err); }
+};
