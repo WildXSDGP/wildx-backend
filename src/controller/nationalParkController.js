@@ -13,3 +13,14 @@ async function enrichPark(park) {
     rules: rules.rows,
   };
 }
+
+// GET /api/national-parks
+exports.getAllParks = async (req, res, next) => {
+  try {
+    const r = await query(
+      `SELECT * FROM national_parks WHERE is_active=true ORDER BY name`
+    );
+    const result = await Promise.all(r.rows.map(enrichPark));
+    res.json({ success: true, parks: result });
+  } catch (err) { next(err); }
+};
