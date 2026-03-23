@@ -146,3 +146,33 @@ exports.getById = async (req, res, next) => {
     res.json(result.rows[0]);
   } catch (err) { next(err); }
 };
+
+
+// ─── POST /api/markers ───────────────────────────────────────
+// Create marker — MarkerService.createMarker / createMarkerWithTime
+exports.create = async (req, res, next) => {
+  try {
+    const { parkId, animalType, latitude, longitude, spottedAt, reporterName, notes } = req.body;
+
+    if (!parkId || !animalType || latitude === undefined || longitude === undefined)
+      return res.status(400).json({ error: 'parkId, animalType, latitude, longitude are required' });
+
+    const discriminator = toDiscriminator(animalType);
+    if (!VALID_ANIMAL_TYPES.includes(discriminator))
+      return res.status(400).json({ error: `Invalid animalType. Valid values: ${VALID_ANIMAL_TYPES.join(', ')}` });
+
+    // Verify park exists
+    const parkCheck = await query('SELECT id FROM national_parks WHERE id = $1', [parkId]);
+    if (!parkCheck.rows.length) return res.status(404).json({ error: 'Park not found' });
+
+    const result = await query(`
+      INSERT INTO markers (park_id, animal_type, latitude, longitude, spotted_at, reporter_name, notes)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *
+    `, [parkId, discriminator, latitude, longitude,
+        spottedAt ? new Date(spottedAt) : new Date(),
+        reporterName || null, notes || null]);
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) { next(err); }
+};
