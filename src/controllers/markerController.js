@@ -115,3 +115,22 @@ exports.getRecentByPark = async (req, res, next) => {
     res.json(result.rows);
   } catch (err) { next(err); }
 };
+
+// ─── GET /api/markers/park/:parkId/bounds ────────────────────
+// Markers within geographic bounding box — findMarkersInBounds
+exports.getInBounds = async (req, res, next) => {
+  try {
+    const { minLat, maxLat, minLng, maxLng } = req.query;
+    if (!minLat || !maxLat || !minLng || !maxLng)
+      return res.status(400).json({ error: 'minLat, maxLat, minLng, maxLng are all required' });
+
+    const result = await query(`
+      SELECT * FROM markers
+      WHERE park_id = $1
+        AND latitude  BETWEEN $2 AND $3
+        AND longitude BETWEEN $4 AND $5
+      ORDER BY spotted_at DESC
+    `, [req.params.parkId, minLat, maxLat, minLng, maxLng]);
+    res.json(result.rows);
+  } catch (err) { next(err); }
+};
