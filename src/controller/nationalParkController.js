@@ -70,3 +70,8 @@ exports.searchParks = async (req, res, next) => {
     res.json({ success: true, parks: result });
   } catch (err) { next(err); }
 };
+
+// Aliases
+exports.getAll        = exports.getAllParks;
+exports.getById       = exports.getParkById;
+exports.searchByAnimal = exports.searchParks;
