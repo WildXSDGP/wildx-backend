@@ -35,3 +35,38 @@ exports.getParkById = async (req, res, next) => {
     res.json({ success: true, park: await enrichPark(r.rows[0]) });
   } catch (err) { next(err); }
 };
+
+// GET /api/national-parks/search?animal=Elephant&q=yala
+exports.searchParks = async (req, res, next) => {
+  try {
+    const { animal, q } = req.query;
+    let parks = [];
+
+    if (animal) {
+      // Search by animal type via park_animal_types join
+      const r = await query(
+        `SELECT np.* FROM national_parks np
+         JOIN park_animal_types pat ON pat.park_id = np.id
+         WHERE np.is_active=true
+           AND pat.animal_type ILIKE $1
+         ORDER BY np.name`,
+        [`%${animal}%`]
+      );
+      parks = r.rows;
+    } else if (q) {
+      const r = await query(
+        `SELECT * FROM national_parks
+         WHERE is_active=true AND (name ILIKE $1 OR location ILIKE $1)
+         ORDER BY name`,
+        [`%${q}%`]
+      );
+      parks = r.rows;
+    } else {
+      const r = await query('SELECT * FROM national_parks WHERE is_active=true ORDER BY name');
+      parks = r.rows;
+    }
+
+    const result = await Promise.all(parks.map(enrichPark));
+    res.json({ success: true, parks: result });
+  } catch (err) { next(err); }
+};
