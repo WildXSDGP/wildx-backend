@@ -44,3 +44,15 @@ exports.getByParkAndType = async (req, res, next) => {
     res.json(result.rows);
   } catch (err) { next(err); }
 };
+
+// ─── GET /api/markers/park/:parkId/verified ──────────────────
+// Only verified markers — findByNationalParkIdAndIsVerifiedTrue
+exports.getVerifiedByPark = async (req, res, next) => {
+  try {
+    const result = await query(
+      'SELECT * FROM markers WHERE park_id = $1 AND is_verified = TRUE ORDER BY spotted_at DESC',
+      [req.params.parkId]
+    );
+    res.json(result.rows);
+  } catch (err) { next(err); }
+};
