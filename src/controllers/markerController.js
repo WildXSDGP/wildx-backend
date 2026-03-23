@@ -176,3 +176,17 @@ exports.create = async (req, res, next) => {
     res.status(201).json(result.rows[0]);
   } catch (err) { next(err); }
 };
+
+// ─── PUT /api/markers/:markerId/notes ────────────────────────
+// Update notes only — MarkerService.updateMarkerNotes
+exports.updateNotes = async (req, res, next) => {
+  try {
+    const { notes } = req.body;
+    const result = await query(
+      'UPDATE markers SET notes = $1 WHERE id = $2 RETURNING *',
+      [notes, req.params.markerId]
+    );
+    if (!result.rows.length) return res.status(404).json({ error: 'Marker not found' });
+    res.json(result.rows[0]);
+  } catch (err) { next(err); }
+};
