@@ -13,3 +13,15 @@ const ANIMAL_DISPLAY_NAMES = {
   WATER_BUFFALO:      'Water Buffalo',
   SLOTH_BEAR:         'Sloth Bear',
 };
+
+// ─── GET /api/markers/park/:parkId ───────────────────────────
+// All markers for a park — ported from findByNationalParkId
+exports.getByPark = async (req, res, next) => {
+  try {
+    const result = await query(
+      'SELECT * FROM markers WHERE park_id = $1 ORDER BY spotted_at DESC',
+      [req.params.parkId]
+    );
+    res.json(result.rows);
+  } catch (err) { next(err); }
+};
