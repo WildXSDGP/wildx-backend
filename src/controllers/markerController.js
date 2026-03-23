@@ -190,3 +190,17 @@ exports.updateNotes = async (req, res, next) => {
     res.json(result.rows[0]);
   } catch (err) { next(err); }
 };
+
+
+// ─── PATCH /api/markers/:markerId/verify ─────────────────────
+// Verify a marker (admin use)
+exports.verify = async (req, res, next) => {
+  try {
+    const result = await query(
+      'UPDATE markers SET is_verified = TRUE WHERE id = $1 RETURNING *',
+      [req.params.markerId]
+    );
+    if (!result.rows.length) return res.status(404).json({ error: 'Marker not found' });
+    res.json(result.rows[0]);
+  } catch (err) { next(err); }
+};
