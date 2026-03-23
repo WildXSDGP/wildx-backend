@@ -101,3 +101,17 @@ exports.getCountsByAnimalType = async (req, res, next) => {
     res.json(counts);
   } catch (err) { next(err); }
 };
+
+// ─── GET /api/markers/park/:parkId/recent ────────────────────
+// Markers from last 24 hours — findRecentMarkersByParkId
+exports.getRecentByPark = async (req, res, next) => {
+  try {
+    const result = await query(`
+      SELECT * FROM markers
+      WHERE park_id = $1
+        AND spotted_at >= NOW() - INTERVAL '24 hours'
+      ORDER BY spotted_at DESC
+    `, [req.params.parkId]);
+    res.json(result.rows);
+  } catch (err) { next(err); }
+};
