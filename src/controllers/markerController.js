@@ -83,3 +83,21 @@ exports.getAnimalTypesInPark = async (req, res, next) => {
     res.json(types);
   } catch (err) { next(err); }
 };
+
+
+// ─── GET /api/markers/park/:parkId/counts ────────────────────
+// Count by animal type — countMarkersByAnimalType
+exports.getCountsByAnimalType = async (req, res, next) => {
+  try {
+    const result = await query(
+      'SELECT animal_type, COUNT(*) AS count FROM markers WHERE park_id = $1 GROUP BY animal_type',
+      [req.params.parkId]
+    );
+    // Build {SRI_LANKAN_LEOPARD: 5, ...} like the Java Map<String,Long>
+    const counts = {};
+    for (const row of result.rows) {
+      counts[row.animal_type] = parseInt(row.count);
+    }
+    res.json(counts);
+  } catch (err) { next(err); }
+};
